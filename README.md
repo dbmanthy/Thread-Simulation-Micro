@@ -1,5 +1,5 @@
 # Thread-Simulation-Micro
-Micro Project: Create a 2D rope and cloth simulation using Verlet Integration and custom mesh generation.
+Micro Project: Create a 2D rope and cloth simulation using Verlet Integration and object pooling.
 
 Resources:
 https://github.com/SebLague/Cloth-and-IK-Test
