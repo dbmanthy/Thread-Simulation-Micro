@@ -9,7 +9,7 @@ public class VerletSimulation : MonoBehaviour
     public float pointRadius = .32f;
     public float lineThickness;
     public float gravity = 10f;
-    public float friciton =.999f;
+    public float friciton = .999f;
     public float bounceLoss = .95f;
     public bool running;
 
@@ -19,7 +19,7 @@ public class VerletSimulation : MonoBehaviour
     public Color pointColor;
     public Color pinnedPointColor;
 
-    protected List<Star> stars;
+    protected List<Star> stars; //dictionary or tuples
     protected List<Bar> bars;
     protected List<GameObject> drawn;
 
@@ -27,7 +27,7 @@ public class VerletSimulation : MonoBehaviour
 
     protected virtual void Start()
     {
-        if(stars == null)
+        if (stars == null)
         {
             stars = new List<Star>();
         }
@@ -50,7 +50,7 @@ public class VerletSimulation : MonoBehaviour
     {
         CleanUp();
         HandleInput(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        if(running)
+        if (running)
         {
             Simulate();
         }
@@ -75,13 +75,13 @@ public class VerletSimulation : MonoBehaviour
             }
 
             //add bounce
-            if(s.position.x > screenHalfSizeWorldUnits.x)
+            if (s.position.x > screenHalfSizeWorldUnits.x)
             {
                 float offset = s.position.x - s.prevPosition.x;
                 s.position.x = screenHalfSizeWorldUnits.x;
                 s.prevPosition.x = s.position.x + offset * bounceLoss;
             }
-            else if(s.position.x < -screenHalfSizeWorldUnits.x)
+            else if (s.position.x < -screenHalfSizeWorldUnits.x)
             {
                 float offset = s.position.x - s.prevPosition.x;
                 s.position.x = -screenHalfSizeWorldUnits.x;
@@ -133,12 +133,20 @@ public class VerletSimulation : MonoBehaviour
             running = !running;
         }
 
-        if(running)
+        if (running)
         {
         }
         else
         {
-            if(Input.GetMouseButtonDown(0))
+            int i = MouseOverPointIndex(mousePosition);
+            bool mouseOverPoint = i != -1;
+
+            if (Input.GetMouseButtonDown(1) && mouseOverPoint)
+            {
+                stars[i].pinned = !stars[i].pinned;
+            }
+
+            if (Input.GetMouseButtonDown(0))
             {
                 //if (mouseOverPoint)
                 //{
@@ -147,11 +155,25 @@ public class VerletSimulation : MonoBehaviour
                 //}
                 //else
                 //{
-                    stars.Add(new Star() { position = mousePosition, prevPosition = mousePosition });
+                stars.Add(new Star() { position = mousePosition, prevPosition = mousePosition });
                 //}
             }
         }
 
+    }
+
+    int MouseOverPointIndex(Vector2 mousePosition)
+    {
+        for (int i = 0; i < stars.Count; i++)
+        {
+            float distance = (stars[i].position - mousePosition).magnitude;
+
+            if (distance < pointRadius)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 
     void Draw()
@@ -165,9 +187,9 @@ public class VerletSimulation : MonoBehaviour
         }
     }
 
-    void CleanUp()
+    void CleanUp() // could check if a point has moved first?
     {
-        foreach(GameObject gameObject in drawn)
+        foreach (GameObject gameObject in drawn)
         {
             gameObject.SetActive(false);
         }
