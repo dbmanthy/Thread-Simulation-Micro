@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using static Pooler;
 
 public class VerletSimulation : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class VerletSimulation : MonoBehaviour
     public float friciton =.999f;
     public float bounceLoss = .95f;
     public bool running;
+
+    public GameObject starPrefab;
+    public GameObject barPrefab;
 
     public Color pointColor;
     public Color pinnedPointColor;
@@ -38,6 +42,8 @@ public class VerletSimulation : MonoBehaviour
 
         running = false;
         screenHalfSizeWorldUnits = new Vector2(Camera.main.aspect * Camera.main.orthographicSize, Camera.main.orthographicSize);
+
+        Pooler.instance.CreatePool(starPrefab, 500);
     }
 
     void Update()
@@ -57,7 +63,6 @@ public class VerletSimulation : MonoBehaviour
 
     void Simulate()
     {
-        Debug.Log("running");
         foreach (Star s in stars)
         {
             //basic valet integration
@@ -143,7 +148,6 @@ public class VerletSimulation : MonoBehaviour
                 //else
                 //{
                     stars.Add(new Star() { position = mousePosition, prevPosition = mousePosition });
-                    Debug.Log("click at point " + mousePosition.ToString());
                 //}
             }
         }
@@ -154,21 +158,18 @@ public class VerletSimulation : MonoBehaviour
     {
         foreach (Star s in stars)
         {
-            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            Renderer sphereRenderer = sphere.GetComponent<Renderer>();
-            sphereRenderer.material.SetColor("_Color", s.pinned ? pinnedPointColor : pointColor);
-            sphere.transform.position = s.position;
-            sphere.transform.localScale = Vector3.one * pointRadius;
-            drawn.Add(sphere);
+            Pooler.instance.ReuseObject(starPrefab, s.position, Quaternion.identity, Vector3.one * pointRadius);
+            GameObject drawnObject = Pooler.instance.lastInstance;
+            drawn.Add(drawnObject);
 
         }
     }
 
     void CleanUp()
     {
-        foreach(GameObject go in drawn)
+        foreach(GameObject gameObject in drawn)
         {
-            Destroy(go);
+            gameObject.SetActive(false);
         }
     }
 }
