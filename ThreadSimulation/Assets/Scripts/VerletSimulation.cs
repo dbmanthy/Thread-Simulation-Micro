@@ -24,6 +24,8 @@ public class VerletSimulation : MonoBehaviour
     protected List<GameObject> drawn;
 
     Vector2 screenHalfSizeWorldUnits;
+    bool pointCaptured;
+    Star capturedPoint;
 
     protected virtual void Start()
     {
@@ -41,6 +43,7 @@ public class VerletSimulation : MonoBehaviour
         }
 
         running = false;
+        pointCaptured = false;
         screenHalfSizeWorldUnits = new Vector2(Camera.main.aspect * Camera.main.orthographicSize, Camera.main.orthographicSize);
 
         Pooler.instance.CreatePool(starPrefab, 500);
@@ -133,14 +136,29 @@ public class VerletSimulation : MonoBehaviour
             running = !running;
         }
 
+
         if (running)
         {
             int i = MouseOverPointIndex(mousePosition);
             bool mouseOverPoint = i != -1;
 
-            if (Input.GetMouseButtonDown(0) && mouseOverPoint)
+            //handle mouse drag
+            //TODO could add a max diff between prevPos and Pos so there is a max move speed
+            if (Input.GetMouseButton(0) && mouseOverPoint && !pointCaptured)
             {
-                stars[i].position = mousePosition;
+                capturedPoint = stars[i];
+                pointCaptured = true;
+            }
+
+            if(pointCaptured)
+            {
+                capturedPoint.position = mousePosition;
+            }
+
+            if(Input.GetMouseButtonUp(0))
+            {
+                capturedPoint = null;
+                pointCaptured = false;
             }
         }
         else
@@ -175,7 +193,7 @@ public class VerletSimulation : MonoBehaviour
         {
             float distance = (stars[i].position - mousePosition).magnitude;
 
-            if (distance < pointRadius)
+            if (distance < pointRadius * 1.2f)
             {
                 return i;
             }
