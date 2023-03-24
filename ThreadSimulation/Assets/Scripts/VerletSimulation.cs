@@ -90,7 +90,7 @@ public class VerletSimulation : MonoBehaviour
             if (s.position.y > screenHalfSizeWorldUnits.y)
             {
                 float offset = s.position.y - s.prevPosition.y;
-                s.position.y = screenHalfSizeWorldUnits.x;
+                s.position.y = screenHalfSizeWorldUnits.y;
                 s.prevPosition.y = s.position.y + offset * bounceLoss;
             }
             else if (s.position.y < -screenHalfSizeWorldUnits.y)
@@ -135,6 +135,13 @@ public class VerletSimulation : MonoBehaviour
 
         if (running)
         {
+            int i = MouseOverPointIndex(mousePosition);
+            bool mouseOverPoint = i != -1;
+
+            if (Input.GetMouseButtonDown(0) && mouseOverPoint)
+            {
+                stars[i].position = mousePosition;
+            }
         }
         else
         {
