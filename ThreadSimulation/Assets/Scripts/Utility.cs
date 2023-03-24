@@ -40,4 +40,15 @@ public static class Utility
 
         return array;
     }
+
+    public static bool LineSegmentsIntersect(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
+    {
+        float d = (b2.x - b1.x) * (a1.y - a2.y) - (a1.x - a2.x) * (b2.y - b1.y);
+        if (d == 0)
+            return false;
+        float t = ((b1.y - b2.y) * (a1.x - b1.x) + (b2.x - b1.x) * (a1.y - b1.y)) / d;
+        float u = ((a1.y - a2.y) * (a1.x - b1.x) + (a2.x - a1.x) * (a1.y - b1.y)) / d;
+
+        return t >= 0 && t <= 1 && u >= 0 && u <= 1;
+    }
 }

@@ -31,6 +31,7 @@ public class VerletSimulation : MonoBehaviour
     protected List<GameObject> drawn;
 
     Vector2 screenHalfSizeWorldUnits;
+    Vector2 breakPositionOld;
     Star capturedStar;
     bool starCaptured;
     bool drawingBar;
@@ -205,6 +206,17 @@ public class VerletSimulation : MonoBehaviour
                 capturedStar = null;
                 starCaptured = false;
             }
+
+            //
+            if (Input.GetMouseButtonDown(1))
+            {
+                breakPositionOld = mousePosition;
+            }
+            if (Input.GetMouseButton(1))
+            {
+                BreakBar(breakPositionOld, mousePosition);
+                breakPositionOld = mousePosition;
+            }
         }
         else
         {
@@ -249,20 +261,6 @@ public class VerletSimulation : MonoBehaviour
 
     }
 
-    int MouseOverPointIndex(Vector2 mousePosition)
-    {
-        for (int i = 0; i < stars.Count; i++)
-        {
-            float distance = (stars[i].position - mousePosition).magnitude;
-
-            if (distance < pointRadius * 1.2f)
-            {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     void Draw()
     {
         foreach (Star star in stars)
@@ -274,6 +272,10 @@ public class VerletSimulation : MonoBehaviour
 
         foreach (Bar bar in bars)
         {
+            if (bar.dead)
+            {
+                continue;
+            }
             Vector3 center = (bar.starHead.position + bar.starTail.position) / 2;
             var rotation = Quaternion.FromToRotation(Vector3.up, (bar.starHead.position - bar.starTail.position).normalized);
             Vector3 scale = new Vector3(lineThickness * lineThicknessFactor, (bar.starHead.position - bar.starTail.position).magnitude, lineThickness * lineThicknessFactor);
@@ -293,6 +295,31 @@ public class VerletSimulation : MonoBehaviour
             Pooler.instance.ReuseObject(starPrefab, center, rotation, scale, barColor);
             GameObject drawnObject = Pooler.instance.currentInstance;
             drawn.Add(drawnObject);
+        }
+    }
+
+    int MouseOverPointIndex(Vector2 mousePosition)
+    {
+        for (int i = 0; i < stars.Count; i++)
+        {
+            float distance = (stars[i].position - mousePosition).magnitude;
+
+            if (distance < pointRadius * 1.2f)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    void BreakBar(Vector2 start, Vector2 end)
+    {
+        for (int i = bars.Count - 1; i >= 0; i--)
+        {
+            if (Utility.LineSegmentsIntersect(start, end, bars[i].starHead.position, bars[i].starTail.position))
+            {
+                bars[i].dead = true;
+            }
         }
     }
 
