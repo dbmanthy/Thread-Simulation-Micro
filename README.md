@@ -4,3 +4,4 @@ Micro Project: Create a 2D rope and cloth simulation using Verlet Integration an
 Resources:
 https://github.com/SebLague/Cloth-and-IK-Test
 https://www.youtube.com/watch?v=3HjO_RGIjCU&ab_channel=CodingMath
+https://www.youtube.com/watch?v=LhqP3EghQ-Q&ab_channel=SebastianLague
