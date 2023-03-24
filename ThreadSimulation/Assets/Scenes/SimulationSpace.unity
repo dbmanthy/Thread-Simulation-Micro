@@ -240,11 +240,12 @@ MonoBehaviour:
   gravity: 10
   friciton: 0.999
   bounceLoss: 0.9
+  regidity: 5
   running: 0
   starPrefab: {fileID: 120936210895602649, guid: 4a74e61287ace4394ab5a04267e509f2, type: 3}
-  barPrefab: {fileID: 1565139025936334517, guid: cd2a5ba275ee7468c9e4b5968ba07e24, type: 3}
-  pointColor: {r: 0.72100794, g: 0.9056604, b: 0.4229263, a: 0}
-  pinnedPointColor: {r: 0.7830189, g: 0.30655926, b: 0.30655926, a: 0}
+  barPrefab: {fileID: 9085235149626199924, guid: cd2a5ba275ee7468c9e4b5968ba07e24, type: 3}
+  starColor: {r: 0.4489708, g: 0.8392157, b: 0.4078431, a: 0}
+  pinnedStarColor: {r: 0.7830189, g: 0.34349412, b: 0.34349412, a: 0}
 --- !u!4 &559052144
 Transform:
   m_ObjectHideFlags: 0
@@ -302,4 +303,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbed0e5d929c9439c99aef90a84038db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastInstance: {fileID: 0}
+  currentInstance: {fileID: 0}

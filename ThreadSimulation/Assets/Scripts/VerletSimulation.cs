@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using static Pooler;
+using static VerletSimulation;
 
 public class VerletSimulation : MonoBehaviour
 {
@@ -17,8 +18,12 @@ public class VerletSimulation : MonoBehaviour
     public GameObject starPrefab;
     public GameObject barPrefab;
 
-    public Color pointColor;
-    public Color pinnedPointColor;
+    public Color starColor;
+    public Color pinnedStarColor;
+
+    Color connectedBarColor;
+    Color barColor;
+    const float colorTint = .12f;
 
     protected List<Star> stars; //dictionary or tuples
     protected List<Bar> bars;
@@ -51,6 +56,9 @@ public class VerletSimulation : MonoBehaviour
         starCaptured = false;
         drawingBar = false;
         screenHalfSizeWorldUnits = new Vector2(Camera.main.aspect * Camera.main.orthographicSize, Camera.main.orthographicSize);
+
+        connectedBarColor = new Color(starColor.r - colorTint, starColor.g - colorTint, starColor.b - colorTint);
+        barColor = new Color(pinnedStarColor.r - colorTint, pinnedStarColor.g - colorTint, pinnedStarColor.b - colorTint);
 
         Pooler.instance.CreatePool(starPrefab, 500);
         Pooler.instance.CreatePool(barPrefab, 1000);
@@ -126,7 +134,6 @@ public class VerletSimulation : MonoBehaviour
     {
         public Star starHead, starTail;
         public float length;
-        public bool beingDrawn;
         public bool dead;
 
         public Bar(Star starA, Star starB)
@@ -173,7 +180,6 @@ public class VerletSimulation : MonoBehaviour
         {
             int i = MouseOverPointIndex(mousePosition);
             bool mouseOverPoint = i != -1;
-            Debug.Log(i);
 
             //pin star
             if (Input.GetMouseButtonDown(1) && mouseOverPoint)
@@ -188,7 +194,6 @@ public class VerletSimulation : MonoBehaviour
                 {
                     drawingBar = true;
                     barStartIndex = i;
-                    Debug.Log("bar start " + i.ToString());
                 }
                 else
                 {
@@ -203,9 +208,9 @@ public class VerletSimulation : MonoBehaviour
                 {
                     if (i != barStartIndex)
                     {
-                        Debug.Log("bar connected");
                         bars.Add(new Bar(stars[barStartIndex], stars[i]));
                         ShuffleArray();
+                        barStartIndex = -1;
                     }
                 }
                 drawingBar = false;
@@ -232,7 +237,7 @@ public class VerletSimulation : MonoBehaviour
     {
         foreach (Star star in stars)
         {
-            Pooler.instance.ReuseObject(starPrefab, star.position, Quaternion.identity, Vector3.one * pointRadius, star.pinned ? pinnedPointColor : pointColor);
+            Pooler.instance.ReuseObject(starPrefab, star.position, Quaternion.identity, Vector3.one * pointRadius, star.pinned ? pinnedStarColor : starColor);
             GameObject drawnObject = Pooler.instance.currentInstance;
             drawn.Add(drawnObject);
         }
@@ -243,7 +248,7 @@ public class VerletSimulation : MonoBehaviour
             var rotation = Quaternion.FromToRotation(Vector3.up, (bar.starHead.position - bar.starTail.position).normalized);
             Vector3 scale = new Vector3(lineThickness * lineThicknessFactor, (bar.starHead.position - bar.starTail.position).magnitude, lineThickness * lineThicknessFactor);
         
-            Pooler.instance.ReuseObject(starPrefab, center, rotation, scale, bar.beingDrawn ? pinnedPointColor : pointColor);
+            Pooler.instance.ReuseObject(starPrefab, center, rotation, scale, connectedBarColor);
             GameObject drawnObject = Pooler.instance.currentInstance;
             drawn.Add(drawnObject);
         }
@@ -251,7 +256,13 @@ public class VerletSimulation : MonoBehaviour
         if (drawingBar)
         {
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 center = (stars[barStartIndex].position + mousePosition) / 2;
+            var rotation = Quaternion.FromToRotation(Vector3.up, (stars[barStartIndex].position - mousePosition).normalized);
+            Vector3 scale = new Vector3(lineThickness * lineThicknessFactor, (stars[barStartIndex].position - mousePosition).magnitude, lineThickness * lineThicknessFactor);
 
+            Pooler.instance.ReuseObject(starPrefab, center, rotation, scale, barColor);
+            GameObject drawnObject = Pooler.instance.currentInstance;
+            drawn.Add(drawnObject);
         }
     }
 
