@@ -14,6 +14,7 @@ public class VerletSimulation : MonoBehaviour
     public float bounceLoss = .95f;
     public float regidity = 5f;
     public bool running;
+    public bool constrainBarMinLength = true;
 
     public GameObject starPrefab;
     public GameObject barPrefab;
@@ -118,6 +119,35 @@ public class VerletSimulation : MonoBehaviour
                 s.prevPosition.y = s.position.y + offset * bounceLoss;
             }
 
+        }
+
+        for (int i = 0; i < regidity; i++)
+        {
+            for (int b = 0; b < bars.Count; b++)
+            {
+                Bar bar = bars[barOrder[b]];
+                if (bar.dead)
+                {
+                    continue;
+                }
+
+                Vector2 stickCentre = (bar.starHead.position + bar.starTail.position) / 2;
+                Vector2 stickDir = (bar.starHead.position - bar.starTail.position).normalized;
+                float length = (bar.starHead.position - bar.starTail.position).magnitude;
+
+                if (length > bar.length || constrainBarMinLength)
+                {
+                    if (!bar.starHead.pinned)
+                    {
+                        bar.starHead.position = stickCentre + stickDir * bar.length / 2;
+                    }
+                    if (!bar.starTail.pinned)
+                    {
+                        bar.starTail.position = stickCentre - stickDir * bar.length / 2;
+                    }
+                }
+
+            }
         }
     }
 
