@@ -6,7 +6,7 @@ public class Pooler : MonoBehaviour
 {
     Dictionary<int, Queue<PoolObjectInstance>> poolDict = new Dictionary<int, Queue<PoolObjectInstance>>();
 
-    public GameObject lastInstance;
+    public GameObject currentInstance;
 
     //singleton pattern
     static Pooler _instance;
@@ -54,7 +54,7 @@ public class Pooler : MonoBehaviour
 
             gameObjectToReuse.Resue(position, rotation, scale, color);
 
-            lastInstance = gameObjectToReuse.gameObject;
+            currentInstance = gameObjectToReuse.gameObject;
         }
     }
 

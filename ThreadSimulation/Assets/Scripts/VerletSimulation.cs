@@ -11,6 +11,7 @@ public class VerletSimulation : MonoBehaviour
     public float gravity = 10f;
     public float friciton = .999f;
     public float bounceLoss = .95f;
+    public float regidity = 5f;
     public bool running;
 
     public GameObject starPrefab;
@@ -24,8 +25,12 @@ public class VerletSimulation : MonoBehaviour
     protected List<GameObject> drawn;
 
     Vector2 screenHalfSizeWorldUnits;
-    bool pointCaptured;
-    Star capturedPoint;
+    Star capturedStar;
+    bool starCaptured;
+    bool drawingBar;
+    int barStartIndex;
+    int[] barOrder;
+    const float lineThicknessFactor = 1 / 30f;
 
     protected virtual void Start()
     {
@@ -43,10 +48,12 @@ public class VerletSimulation : MonoBehaviour
         }
 
         running = false;
-        pointCaptured = false;
+        starCaptured = false;
+        drawingBar = false;
         screenHalfSizeWorldUnits = new Vector2(Camera.main.aspect * Camera.main.orthographicSize, Camera.main.orthographicSize);
 
         Pooler.instance.CreatePool(starPrefab, 500);
+        Pooler.instance.CreatePool(barPrefab, 1000);
     }
 
     void Update()
@@ -117,14 +124,15 @@ public class VerletSimulation : MonoBehaviour
     [System.Serializable]
     public class Bar
     {
-        public Star starA, starB;
+        public Star starHead, starTail;
         public float length;
+        public bool beingDrawn;
         public bool dead;
 
         public Bar(Star starA, Star starB)
         {
-            this.starA = starA;
-            this.starB = starB;
+            starHead = starA;
+            starTail = starB;
             length = Vector2.Distance(starA.position, starB.position);
         }
     }
@@ -144,44 +152,63 @@ public class VerletSimulation : MonoBehaviour
 
             //handle mouse drag
             //TODO could add a max diff between prevPos and Pos so there is a max move speed
-            if (Input.GetMouseButton(0) && mouseOverPoint && !pointCaptured)
+            if (Input.GetMouseButton(0) && mouseOverPoint && !starCaptured)
             {
-                capturedPoint = stars[i];
-                pointCaptured = true;
+                capturedStar = stars[i];
+                starCaptured = true;
             }
 
-            if(pointCaptured)
+            if(starCaptured)
             {
-                capturedPoint.position = mousePosition;
+                capturedStar.position = mousePosition;
             }
 
             if(Input.GetMouseButtonUp(0))
             {
-                capturedPoint = null;
-                pointCaptured = false;
+                capturedStar = null;
+                starCaptured = false;
             }
         }
         else
         {
             int i = MouseOverPointIndex(mousePosition);
             bool mouseOverPoint = i != -1;
+            Debug.Log(i);
 
+            //pin star
             if (Input.GetMouseButtonDown(1) && mouseOverPoint)
             {
                 stars[i].pinned = !stars[i].pinned;
             }
 
+            //creat star or bar
             if (Input.GetMouseButtonDown(0))
             {
-                //if (mouseOverPoint)
-                //{
-                //    drawingStick = true;
-                //    stickStartIndex = i;
-                //}
-                //else
-                //{
-                stars.Add(new Star() { position = mousePosition, prevPosition = mousePosition });
-                //}
+                if (mouseOverPoint)
+                {
+                    drawingBar = true;
+                    barStartIndex = i;
+                    Debug.Log("bar start " + i.ToString());
+                }
+                else
+                {
+                    stars.Add(new Star() { position = mousePosition, prevPosition = mousePosition });
+                }
+            }
+
+            //connect bar
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (mouseOverPoint && drawingBar)
+                {
+                    if (i != barStartIndex)
+                    {
+                        Debug.Log("bar connected");
+                        bars.Add(new Bar(stars[barStartIndex], stars[i]));
+                        ShuffleArray();
+                    }
+                }
+                drawingBar = false;
             }
         }
 
@@ -203,11 +230,27 @@ public class VerletSimulation : MonoBehaviour
 
     void Draw()
     {
-        foreach (Star s in stars)
+        foreach (Star star in stars)
         {
-            Pooler.instance.ReuseObject(starPrefab, s.position, Quaternion.identity, Vector3.one * pointRadius, s.pinned ? pinnedPointColor : pointColor);
-            GameObject drawnObject = Pooler.instance.lastInstance;
+            Pooler.instance.ReuseObject(starPrefab, star.position, Quaternion.identity, Vector3.one * pointRadius, star.pinned ? pinnedPointColor : pointColor);
+            GameObject drawnObject = Pooler.instance.currentInstance;
             drawn.Add(drawnObject);
+        }
+
+        foreach (Bar bar in bars)
+        {
+            Vector3 center = (bar.starHead.position + bar.starTail.position) / 2;
+            var rotation = Quaternion.FromToRotation(Vector3.up, (bar.starHead.position - bar.starTail.position).normalized);
+            Vector3 scale = new Vector3(lineThickness * lineThicknessFactor, (bar.starHead.position - bar.starTail.position).magnitude, lineThickness * lineThicknessFactor);
+        
+            Pooler.instance.ReuseObject(starPrefab, center, rotation, scale, bar.beingDrawn ? pinnedPointColor : pointColor);
+            GameObject drawnObject = Pooler.instance.currentInstance;
+            drawn.Add(drawnObject);
+        }
+
+        if (drawingBar)
+        {
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         }
     }
@@ -218,5 +261,15 @@ public class VerletSimulation : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+    }
+
+    protected void ShuffleArray()
+    {
+        barOrder = new int[bars.Count];
+        for (int i = 0; i < barOrder.Length; i++)
+        {
+            barOrder[i] = i;
+        }
+        Utility.ShuffleArray(barOrder, new System.Random());
     }
 }
