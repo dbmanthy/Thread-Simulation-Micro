@@ -180,14 +180,14 @@ public class VerletSimulation : MonoBehaviour
     {
         foreach (Star s in stars)
         {
-            Pooler.instance.ReuseObject(starPrefab, s.position, Quaternion.identity, Vector3.one * pointRadius);
+            Pooler.instance.ReuseObject(starPrefab, s.position, Quaternion.identity, Vector3.one * pointRadius, s.pinned ? pinnedPointColor : pointColor);
             GameObject drawnObject = Pooler.instance.lastInstance;
             drawn.Add(drawnObject);
 
         }
     }
 
-    void CleanUp() // could check if a point has moved first?
+    void CleanUp() //TODO could check if a point has moved first?
     {
         foreach (GameObject gameObject in drawn)
         {

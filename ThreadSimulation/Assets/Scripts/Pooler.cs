@@ -43,7 +43,7 @@ public class Pooler : MonoBehaviour
         }
     }
 
-    public void ReuseObject(GameObject prefab, Vector3 position, Quaternion rotation, Vector3 scale)
+    public void ReuseObject(GameObject prefab, Vector3 position, Quaternion rotation, Vector3 scale, Color color)
     {
         int poolKey = prefab.GetInstanceID();
 
@@ -52,7 +52,7 @@ public class Pooler : MonoBehaviour
             PoolObjectInstance gameObjectToReuse = poolDict[poolKey].Dequeue();
             poolDict[poolKey].Enqueue(gameObjectToReuse);
 
-            gameObjectToReuse.Resue(position, rotation, scale);
+            gameObjectToReuse.Resue(position, rotation, scale, color);
 
             lastInstance = gameObjectToReuse.gameObject;
         }
@@ -79,13 +79,16 @@ public class Pooler : MonoBehaviour
             }
         }
 
-        public void Resue(Vector3 position, Quaternion rotation, Vector3 scale)
+        public void Resue(Vector3 position, Quaternion rotation, Vector3 scale, Color color)
         {
             gameObject.SetActive(true);
 
             transform.position = position;
             transform.rotation = rotation;
             transform.localScale = scale;
+
+            Renderer objectRenderer = gameObject.GetComponent<Renderer>();
+            objectRenderer.material.SetColor("_Color", color);
 
             if (hasPoolObjectComponent)
             {
