@@ -7,12 +7,25 @@ using static VerletSimulation;
 
 public class VerletSimulation : MonoBehaviour
 {
+    [Range(.1f,1f)]
     public float pointRadius = .32f;
+    [Range(1f,4f)]
     public float lineThickness;
+    [Range(-100,100)]
     public float gravity = 10f;
+    [Range(0,1)]
     public float friciton = .999f;
+    [Range(0,1)]
     public float bounceLoss = .95f;
+    [Range(0,5)]
     public float regidity = 5f;
+    [Range(1, 5)]
+    public int meshLocking = 5;
+
+    [Header("Cloth Settings")]
+    public Vector2Int numPoints;
+    public Vector2 boundsSize;
+
     public bool running;
     public bool constrainBarMinLength = true;
 
@@ -62,8 +75,8 @@ public class VerletSimulation : MonoBehaviour
         connectedBarColor = new Color(starColor.r - colorTint, starColor.g - colorTint, starColor.b - colorTint);
         barColor = new Color(pinnedStarColor.r - colorTint, pinnedStarColor.g - colorTint, pinnedStarColor.b - colorTint);
 
-        Pooler.instance.CreatePool(starPrefab, 500);
-        Pooler.instance.CreatePool(barPrefab, 1000);
+        Pooler.instance.CreatePool(starPrefab, 10000);
+        Pooler.instance.CreatePool(barPrefab, 10000);
     }
 
     void Update()
@@ -152,29 +165,6 @@ public class VerletSimulation : MonoBehaviour
         }
     }
 
-
-    [System.Serializable]
-    public class Star
-    {
-        public Vector2 position, prevPosition;
-        public bool pinned;
-    }
-
-    [System.Serializable]
-    public class Bar
-    {
-        public Star starHead, starTail;
-        public float length;
-        public bool dead;
-
-        public Bar(Star starA, Star starB)
-        {
-            starHead = starA;
-            starTail = starB;
-            length = Vector2.Distance(starA.position, starB.position);
-        }
-    }
-
     protected virtual void HandleInput(Vector2 mousePosition)
     {
         if (Input.GetKeyDown(KeyCode.Space))
@@ -189,7 +179,6 @@ public class VerletSimulation : MonoBehaviour
             bool mouseOverPoint = i != -1;
 
             //handle mouse drag
-            //TODO could add a max diff between prevPos and Pos so there is a max move speed
             if (Input.GetMouseButton(0) && mouseOverPoint && !starCaptured)
             {
                 capturedStar = stars[i];
@@ -222,6 +211,11 @@ public class VerletSimulation : MonoBehaviour
         {
             int i = MouseOverPointIndex(mousePosition);
             bool mouseOverPoint = i != -1;
+
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                GenerateGrid(numPoints, boundsSize); 
+            }
 
             //pin star
             if (Input.GetMouseButtonDown(1) && mouseOverPoint)
@@ -304,7 +298,7 @@ public class VerletSimulation : MonoBehaviour
         {
             float distance = (stars[i].position - mousePosition).magnitude;
 
-            if (distance < pointRadius * 1.2f)
+            if (distance < pointRadius)
             {
                 return i;
             }
@@ -340,4 +334,94 @@ public class VerletSimulation : MonoBehaviour
         }
         Utility.ShuffleArray(barOrder, new System.Random());
     }
+
+    void GenerateGrid(Vector2Int numStars, Vector2 spacing)
+    {
+        CleanUp();
+        stars.Clear();
+        bars.Clear();
+
+        spacing.x = spacing.x < 2 ? 2 : spacing.x;
+        spacing.y = spacing.y < 2 ? 2 : spacing.y;
+
+        while (screenHalfSizeWorldUnits.x/pointRadius < numStars.x * (spacing.x/2))
+        {
+            if (spacing.x > 2)
+            {
+                spacing.x--;
+            }
+            else
+            {
+                numStars.x = Mathf.FloorToInt(screenHalfSizeWorldUnits.x/pointRadius);
+            }
+        }
+        while (screenHalfSizeWorldUnits.y/pointRadius < numStars.y * (spacing.y/2))
+        {
+            if (spacing.y > 2)
+            {
+                spacing.y--;
+            }
+            else
+            {
+                numStars.y = Mathf.FloorToInt(screenHalfSizeWorldUnits.y/pointRadius);
+            }
+        }
+
+        for (int y = 0; y < numStars.y; y++)
+        {
+            float posY = y / (numStars.y - 1f);//divide the space between 0-1 inot y parts
+            for (int x = 0; x < numStars.x; x++)
+            {
+                bool locked = y == 0 && (x % meshLocking == 0 || x== numStars.x -1);
+                float posX = x / (numStars.x - 1f);
+                Vector2 position = new Vector2((posX -0.5f) * numStars.x * spacing.x * pointRadius, (0.5f - posY) * numStars.y * spacing.y * pointRadius); //center and scale by spacing
+                stars.Add(new Star() { position = position, prevPosition = position, pinned = locked });
+            }
+        }
+
+        for (int y = 0; y < numStars.y; y++)
+        {
+            for (int x = 0; x < numStars.x; x++)
+            {
+                if (x < numStars.x - 1)
+                {
+                    bars.Add(new Bar(stars[IndexFrom2DCoord(x, y, numStars)], stars[IndexFrom2DCoord(x + 1, y, numStars)]));
+                }
+                if (y < numStars.y - 1)
+                {
+                    bars.Add(new Bar(stars[IndexFrom2DCoord(x, y, numStars)], stars[IndexFrom2DCoord(x, y + 1, numStars)]));
+                }
+            }
+        }
+
+        ShuffleArray();
+    }
+
+    int IndexFrom2DCoord(int x, int y, Vector2Int numPoints)
+    {
+        return y * numPoints.x + x;
+    }
+
+    [System.Serializable]
+    public class Star
+    {
+        public Vector2 position, prevPosition;
+        public bool pinned;
+    }
+
+    [System.Serializable]
+    public class Bar
+    {
+        public Star starHead, starTail;
+        public float length;
+        public bool dead;
+
+        public Bar(Star starA, Star starB)
+        {
+            starHead = starA;
+            starTail = starB;
+            length = Vector2.Distance(starA.position, starB.position);
+        }
+    }
+
 }

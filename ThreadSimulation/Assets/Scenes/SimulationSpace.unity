@@ -235,17 +235,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58768140303fb4b65b977b001d706abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointRadius: 0.32
-  lineThickness: 2
+  pointRadius: 0.15
+  lineThickness: 1.5
   gravity: 10
   friciton: 0.999
   bounceLoss: 0.9
-  regidity: 5
+  regidity: 4
+  meshSpacing: 3
+  numPoints: {x: 16, y: 10}
+  boundsSize: {x: 16, y: 10}
   running: 0
+  constrainBarMinLength: 1
   starPrefab: {fileID: 120936210895602649, guid: 4a74e61287ace4394ab5a04267e509f2, type: 3}
   barPrefab: {fileID: 9085235149626199924, guid: cd2a5ba275ee7468c9e4b5968ba07e24, type: 3}
-  starColor: {r: 0.4489708, g: 0.8392157, b: 0.4078431, a: 0}
-  pinnedStarColor: {r: 0.7830189, g: 0.34349412, b: 0.34349412, a: 0}
+  starColor: {r: 0.52963895, g: 0.8392157, b: 0.4078431, a: 0}
+  pinnedStarColor: {r: 0.78431374, g: 0.41044152, b: 0.34509805, a: 0}
 --- !u!4 &559052144
 Transform:
   m_ObjectHideFlags: 0
