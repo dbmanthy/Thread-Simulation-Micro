@@ -17,7 +17,7 @@ public class VerletSimulation : MonoBehaviour
     public float friciton = .999f;
     [Range(0,1)]
     public float bounceLoss = .95f;
-    [Range(0,5)]
+    [Range(0,21)]
     public float regidity = 5f;
     [Range(1, 5)]
     public int meshLocking = 5;
