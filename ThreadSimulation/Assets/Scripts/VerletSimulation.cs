@@ -22,9 +22,9 @@ public class VerletSimulation : MonoBehaviour
     [Range(1, 5)]
     public int meshLocking = 5;
 
-    [Header("Cloth Settings")]
+    [Header("Mesh Settings")]
     public Vector2Int numPoints;
-    public Vector2 boundsSize;
+    public Vector2 meshSpacing;
 
     public bool running;
     public bool constrainBarMinLength = true;
@@ -214,7 +214,7 @@ public class VerletSimulation : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.G))
             {
-                GenerateGrid(numPoints, boundsSize); 
+                GenerateGrid(numPoints, meshSpacing); 
             }
 
             //pin star
