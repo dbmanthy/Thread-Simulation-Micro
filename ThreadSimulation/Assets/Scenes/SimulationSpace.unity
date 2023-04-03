@@ -747,6 +747,7 @@ RectTransform:
   - {fileID: 876571903}
   - {fileID: 2121743827}
   - {fileID: 305769677}
+  - {fileID: 357194492}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -974,6 +975,7 @@ MonoBehaviour:
   SettinMenu: {fileID: 1276184810}
   HelpMenu: {fileID: 2121743826}
   pausePlayText: {fileID: 305769678}
+  onScreenHelp: {fileID: 357194493}
   xDimension: {fileID: 1245738270}
   yDimension: {fileID: 1985532363}
   xSpacing: {fileID: 1786439409}
@@ -1155,11 +1157,11 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "While Paused:\n\tLeft click to add star.\n\tLeft click and hold on a star
-    and drag to another star. Then release to connect them with a bar.\n\tRight click
-    on a star to pin it in place.\n\nWhile Running:\n\tLeft click and hold to move
-    stars around. \n\tRight click and hold, then drag over bars to break bars.\n\nPress
-    space to pause and unpause.\n\nPress g to generate gird."
+  m_Text: "WHILE PAUSED:\n\tLeft click to add star.\n\tLeft click and hold on a star,
+    drag to another star, and release to connect them with a bar.\n\tRight click
+    on a star to pin it in place.\n\tPRESS g TO GENERATE/REFRESH GIRD!\n\nWHILE RUNNING:\n\tLeft
+    click and hold to move stars around. \n\tRight click and hold, then drag over
+    bars to break bars.\n\nPress space to pause and unpause."
 --- !u!222 &252465178
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1583,6 +1585,85 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 352909997}
+  m_CullTransparentMesh: 1
+--- !u!1 &357194491
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 357194492}
+  - component: {fileID: 357194494}
+  - component: {fileID: 357194493}
+  m_Layer: 5
+  m_Name: PlayHelp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &357194492
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357194491}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 75833803}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 188.49539, y: 73.050064}
+  m_SizeDelta: {x: 373.9907, y: 138.1001}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &357194493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357194491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 6
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 
+--- !u!222 &357194494
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357194491}
   m_CullTransparentMesh: 1
 --- !u!1 &397715465
 GameObject:
@@ -2539,7 +2620,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '  Help
+  m_Text: '  Instructions
 
 '
 --- !u!222 &737728810
@@ -3396,7 +3477,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &965570793
 RectTransform:
   m_ObjectHideFlags: 0

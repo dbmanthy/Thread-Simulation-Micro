@@ -9,6 +9,7 @@ public class MenuManager : MonoBehaviour
     public GameObject SettinMenu;
     public GameObject HelpMenu;
     public Text pausePlayText;
+    public Text onScreenHelp;
 
     [Header("Grid Settings")]
     public Slider xDimension;
@@ -43,6 +44,7 @@ public class MenuManager : MonoBehaviour
     {
         simulator = FindObjectOfType<VerletSimulation>();
         pausePlayText.text = "Paused";
+        onScreenHelp.text = "";
     }
 
     void Update()
@@ -50,10 +52,12 @@ public class MenuManager : MonoBehaviour
         if(simulator.running)
         {
             pausePlayText.text = "Running";
+            onScreenHelp.text = "Right click and drag to cut lines\nLeft click and drag to move points";
         }
         else
         {
             pausePlayText.text = "Paused";
+            onScreenHelp.text = "Left click to add points\nLeft click and drag to connect points\nRight click to lock point in place\nPress g to generate grid";
         }
 
         if(GridMenu.activeSelf)
@@ -62,7 +66,7 @@ public class MenuManager : MonoBehaviour
             yDimensionText.text = "y dimension: " + yDimension.value;
             xSpacingText.text = "x spacing: " + xSpacing.value;
             ySpacingText.text = "y spacing: " + ySpacing.value;
-            meshLockingText.text = "mesh spacing" + meshLocking.value;
+            meshLockingText.text = "mesh locking: " + meshLocking.value;
         }
 
         if(SettinMenu.activeSelf)
