@@ -1119,8 +1119,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 420, y: -322.03976}
-  m_SizeDelta: {x: 429.6873, y: 217.8641}
+  m_AnchoredPosition: {x: 420, y: -346.23065}
+  m_SizeDelta: {x: 429.6873, y: 257.5213}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &252465177
 MonoBehaviour:
@@ -1159,7 +1159,7 @@ MonoBehaviour:
     and drag to another star. Then release to connect them with a bar.\n\tRight click
     on a star to pin it in place.\n\nWhile Running:\n\tLeft click and hold to move
     stars around. \n\tRight click and hold, then drag over bars to break bars.\n\nPress
-    space to pause and unpause."
+    space to pause and unpause.\n\nPress g to generate gird."
 --- !u!222 &252465178
 CanvasRenderer:
   m_ObjectHideFlags: 0
