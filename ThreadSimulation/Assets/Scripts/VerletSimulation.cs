@@ -7,22 +7,14 @@ using static VerletSimulation;
 
 public class VerletSimulation : MonoBehaviour
 {
-    [Range(.1f,1f)]
     public float pointRadius = .32f;
-    [Range(1f,4f)]
     public float lineThickness;
-    [Range(-100,100)]
     public float gravity = 10f;
-    [Range(0,1)]
     public float friciton = .999f;
-    [Range(0,1)]
     public float bounceLoss = .95f;
-    [Range(0,21)]
     public float regidity = 5f;
-    [Range(1, 5)]
     public int meshLocking = 5;
 
-    [Header("Mesh Settings")]
     public Vector2Int numPoints;
     public Vector2 meshSpacing;
 
