@@ -8,6 +8,7 @@ public class MenuManager : MonoBehaviour
     public GameObject GridMenu;
     public GameObject SettinMenu;
     public GameObject HelpMenu;
+    public Text pausePlayText;
 
     [Header("Grid Settings")]
     public Slider xDimension;
@@ -41,10 +42,20 @@ public class MenuManager : MonoBehaviour
     void Start()
     {
         simulator = FindObjectOfType<VerletSimulation>();
+        pausePlayText.text = "Paused";
     }
 
     void Update()
     {
+        if(simulator.running)
+        {
+            pausePlayText.text = "Running";
+        }
+        else
+        {
+            pausePlayText.text = "Paused";
+        }
+
         if(GridMenu.activeSelf)
         {
             xDimensionText.text = "x dimension: " + xDimension.value;
