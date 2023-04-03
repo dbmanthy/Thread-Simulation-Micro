@@ -106,6 +106,7 @@ public class MenuManager : MonoBehaviour
     {
         simulator.numPoints = new Vector2Int((int)xDimension.value, (int)yDimension.value);
         simulator.meshSpacing = new Vector2((int)xSpacing.value, (int)ySpacing.value);
+        simulator.meshLocking = (int)meshLocking.value;
 
     }
 
