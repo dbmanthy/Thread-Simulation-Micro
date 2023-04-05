@@ -127,6 +127,7 @@ public class VerletSimulation : MonoBehaviour
 
         }
 
+        //bar logic
         for (int i = 0; i < regidity; i++)
         {
             for (int b = 0; b < bars.Count; b++)
@@ -137,19 +138,19 @@ public class VerletSimulation : MonoBehaviour
                     continue;
                 }
 
-                Vector2 stickCentre = (bar.starHead.position + bar.starTail.position) / 2;
-                Vector2 stickDir = (bar.starHead.position - bar.starTail.position).normalized;
+                Vector2 stickCenter = (bar.starHead.position + bar.starTail.position) / 2;
+                Vector2 stickDirection = (bar.starHead.position - bar.starTail.position).normalized;
                 float length = (bar.starHead.position - bar.starTail.position).magnitude;
 
                 if (length > bar.length || constrainBarMinLength)
                 {
                     if (!bar.starHead.pinned)
                     {
-                        bar.starHead.position = stickCentre + stickDir * bar.length / 2;
+                        bar.starHead.position = stickCenter + stickDirection * bar.length / 2;
                     }
                     if (!bar.starTail.pinned)
                     {
-                        bar.starTail.position = stickCentre - stickDir * bar.length / 2;
+                        bar.starTail.position = stickCenter - stickDirection * bar.length / 2;
                     }
                 }
 
@@ -188,7 +189,6 @@ public class VerletSimulation : MonoBehaviour
                 starCaptured = false;
             }
 
-            //
             if (Input.GetMouseButtonDown(1))
             {
                 breakPositionOld = mousePosition;
@@ -244,7 +244,6 @@ public class VerletSimulation : MonoBehaviour
                 drawingBar = false;
             }
         }
-
     }
 
     void Draw()
