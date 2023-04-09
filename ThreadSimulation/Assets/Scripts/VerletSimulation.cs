@@ -67,8 +67,8 @@ public class VerletSimulation : MonoBehaviour
         connectedBarColor = new Color(starColor.r - colorTint, starColor.g - colorTint, starColor.b - colorTint);
         barColor = new Color(pinnedStarColor.r - colorTint, pinnedStarColor.g - colorTint, pinnedStarColor.b - colorTint);
 
-        Pooler.instance.CreatePool(starPrefab, 10000);
-        Pooler.instance.CreatePool(barPrefab, 10000);
+        Pooler.instance.CreatePool(starPrefab, 100);
+        Pooler.instance.CreatePool(barPrefab, 400);
     }
 
     void Update()
