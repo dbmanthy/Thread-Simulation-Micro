@@ -1,6 +1,8 @@
 # Thread-Simulation-Micro
 Micro Project: Create a 2D rope and cloth simulation using Verlet Integration and object pooling.
 
+Playable Demo: https://dbmanthy.github.io/Thread-Simulation-Micro/ThreadSimulationBuild/
+
 Resources:
 https://github.com/SebLague/Cloth-and-IK-Test
 https://www.youtube.com/watch?v=3HjO_RGIjCU&ab_channel=CodingMath
